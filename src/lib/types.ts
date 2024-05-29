@@ -2,8 +2,8 @@ export interface BaseItem {
   id: number;
   type: ItemType;
   deleted?: boolean;
-  by?: string;
-  time?: number;
+  by: string;
+  time: number;
   text?: string;
   dead?: boolean;
   parent?: number;
@@ -11,13 +11,13 @@ export interface BaseItem {
   kids?: number[];
   url?: string;
   score?: number;
-  title?: string;
+  title: string;
   parts?: number[];
   descendants?: number;
 }
 
 export interface CommentItem extends BaseItem {
-  type: "comment";
+  type: ItemType;
   by: string;
   id: number;
   kids?: number[];
@@ -30,7 +30,7 @@ export interface StoryItem extends BaseItem {
   type: "story";
   by: string;
   id: number;
-  descendants?: number;
+  descendants: number;
   kids?: number[];
   score: number;
   time: number;

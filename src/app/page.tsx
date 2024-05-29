@@ -1,12 +1,7 @@
-import Story from "@/components/story";
-const data = {
-  id: "40494958",
-  by: "vinse",
-  title:
-    "Marcus.com locked me out of my account and retains control of my life savings",
-  time: 1716845634,
-  text: "[Message for moderators : it seems like I am in the exact same situation as  sherlock_h 6 in this thread : https:&#x2F;&#x2F;news.ycombinator.com&#x2F;item?id=38135661 but the thread is closed now and  sherlock_h 6 did not updated us on how&#x2F;if the situation eventually resolved. If it is more appropriate, feel free to re-open this old thread and I&#x27;ll post my message there]<p>Short version  :\nMy Marcus account got locked when I initiated a large withdrawal corresponding to my entire life of savings. I have not been able to access my account since then.<p>Detailed context : I have had a savings account with Marcus since 2018. I recently moved to France so I needed to empty these accounts and move the funds to France. So I initiated transfers from Marcus to my Interactive Broker account via Direct Deposit (and was planning on using IB for FX conversion and send the money to France).<p>The transfers got rejected, and I was left with a message to call the support. I called the support and this is where it all started. They proceeded with regular checks to verify my identity (last 4 digits of social security, date of birth, …). As I do not own a US phone anymore, the number they have on file is that of a friend, and I was calling from my French number. After a few minutes on hold, they said that they were not able to verify my identity as the name associated with the phone number they had on file did not tie to my name. They were also not able to verify my identity with my passport nor with my New York driving license. I spoke with 3 different person, none of them was able to propose an alternative way of verifying my identity. I hang up and realized shortly after that my account got locked.<p>A few days later, I called them through the US phone number they have on file (having my friend calling on speaker), I answered all the security questions, and I was calling from the exact phone number they have on file, but again, they said they were not able to verify my identity. They said my case was under review and that someone would contact me in the next 2 days. Nothing happens over the next week, so I call again, go through the exact same conversations, with various contradictory and ridiculous answers from Marcus agents. In short, there is nothing they can do, no way to verify my identity, and that I should just wait for someone to contact me.<p>It&#x27;s been 20 days, when I call they still say my case is under review and they retain control on my lifelong savings. It feels like a nightmare...<p>I read the suggestions in this other thread https:&#x2F;&#x2F;news.ycombinator.com&#x2F;item?id=38135661  and opened a complaint with the Consumer Financial Protection Bureau 10 days ago, but I still haven&#x27;t received an answer. I am planning on opening other complaints with the FDIC and Utah Department of Financial Institutions (as Marcus is headquartered in Utah).<p>Has anyone been on this situation and actually got it resolved?",
-};
-export default function Home() {
-  return <main className="max-w-[1100px]"></main>;
+"use server";
+
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  redirect("/category/top_story");
 }

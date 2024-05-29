@@ -3,9 +3,36 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: dark;
   --black-900: #0a0a0b;
   --black-700: #0d1114;
-  --white: #fafafa;
+  --white: #eef1f3;
+  --grey-100: #ffffff1a;
+  --grey-200: #ffffff20;
   --grey-400: #a1a1aa;
+  --grey-700: #b7cad4;
   --orange-500: #ff6600;
+}
+
+.story-text {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.story-text p {
+  display: inline;
+}
+
+svg {
+  fill: currentColor;
+  /* height: 16px;
+  width: 16px; */
+}
+
+.nav-buttons {
+  @apply flex h-[2.5em] w-[5em] justify-center items-center rounded-2xl bg-surface-secondary font-bold text-base hover:bg-surface-tertiary;
 }

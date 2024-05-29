@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Nav from "./Nav";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -15,11 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${inter.className} bg-surface-primary text-text-primary`}
-      >
-        {children}
+    <html lang="en" className="text-text-primary max-w-[900px] mx-auto">
+      <body className={`${inter.className} bg-surface-primary relative`}>
+        <Nav />
+        <main className="pt-16">{children}</main>
       </body>
     </html>
   );

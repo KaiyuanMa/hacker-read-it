@@ -11,10 +11,18 @@ const config: Config = {
     colors: {
       //TEXT
       "text-primary": "var(--white)",
-      "text-secondary": "var(--grey-400)",
+      "text-secondary": "var(--grey-700)",
+      "text-tertiary": "var(--grey-400)",
+      "text-brand": "var(--orange-500)",
 
       //BACKGROUND
       "surface-primary": "var(--black-700)",
+      "surface-secondary": "var(--grey-200)",
+      "surface-tertiary": "var(--grey-700)",
+
+      //BORDER
+      "border-primary": "var(--grey-100)",
+      "border-secondary": "var(--grey-400)",
     },
   },
   plugins: [],

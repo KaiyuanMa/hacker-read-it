@@ -5,7 +5,7 @@ import { timeAgo } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import StoryUtil from "@/components/StoryUtil";
 import Loading from "@/components/Loading";
-import Comment from "@/components/Comment";
+import Comment from "@/components/Comment/Comment";
 
 export default function Item({ params }: { params: { itemId: string } }) {
   const [item, setItem] = useState<BaseItem>();
@@ -26,42 +26,42 @@ export default function Item({ params }: { params: { itemId: string } }) {
       {loading ? (
         <Loading />
       ) : item !== undefined ? (
-        <div className="flex flex-col w-full gap-2 py-4">
-          <div className="flex items-center gap-2 text-text-tertiary text-sm">
+        <div className="flex flex-col w-full gap-4 py-4">
+          <div className="flex flex-col gap-2">
             <div className="font-semibold">{item.by}</div>
             <div className="font-light">{timeAgo(item.time)}</div>
-          </div>
-          <h2 className="font-semibold text-2xl">{item.title}</h2>
-          {item.text !== undefined ? (
-            <div
-              className="story-text-expanded | text-sm text-text-secondary"
-              dangerouslySetInnerHTML={{ __html: item.text }}
+            <h2 className="font-semibold text-2xl">{item.title}</h2>
+            {item.text !== undefined ? (
+              <div
+                className="story-text-expanded | text-sm text-text-secondary"
+                dangerouslySetInnerHTML={{ __html: item.text }}
+              />
+            ) : (
+              ""
+            )}
+            <StoryUtil
+              url={item.url}
+              score={item.score!}
+              descendants={item.descendants!}
             />
-          ) : (
-            ""
-          )}
-          <StoryUtil
-            url={item.url}
-            score={item.score!}
-            descendants={item.descendants!}
-          />
+          </div>
           <div>
-            <button className="rounded-full px-4 py-2 border border-border-secondary">
+            <button className="rounded-full px-4 py-1 border border-border-secondary">
               Add Comment
             </button>
           </div>
-          <div>
+          <div className="text-sm text-text-tertiary">
             <div>Sort by:</div>
-            <div className="flex flex-col gap-4">
-              {item.kids?.map((id) => (
-                <Comment
-                  id={id}
-                  key={id}
-                  isChildren={false}
-                  isLastChildren={false}
-                />
-              ))}
-            </div>
+          </div>
+          <div className="flex flex-col gap-4 ">
+            {item.kids?.map((id) => (
+              <Comment
+                id={id}
+                key={id}
+                isChildren={false}
+                isLastChildren={false}
+              />
+            ))}
           </div>
         </div>
       ) : (

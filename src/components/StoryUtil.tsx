@@ -12,7 +12,7 @@ export default function StoryUtil(props: StoryUtilProps) {
     <>
       <div className="truncate text-sm">
         <a
-          className="text-text-brand hover:underline"
+          className="text-text-brand hover:underline z-10 relative"
           href={props.url}
           target="_blank"
         >

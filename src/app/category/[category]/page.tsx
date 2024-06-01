@@ -56,7 +56,7 @@ export default function Category({ params }: { params: { category: string } }) {
     if (items.length !== 0 && items.length >= itemIds.length) return;
     const currIndex = items.length;
     const currItems = [];
-    for (let i = currIndex; i <= currIndex + 15 && i < itemIds.length; i++) {
+    for (let i = currIndex; i <= currIndex + 9 && i < itemIds.length; i++) {
       const item = await getItem(itemIds[i]);
       currItems.push(item);
     }

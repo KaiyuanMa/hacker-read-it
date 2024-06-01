@@ -6,6 +6,8 @@
   color-scheme: dark;
   --black-900: #0a0a0b;
   --black-700: #0d1114;
+  --black-500: #181c1f;
+  --black-400: #333d42;
   --white: #eef1f3;
   --grey-100: #ffffff1a;
   --grey-200: #ffffff20;
@@ -38,5 +40,5 @@ svg {
 }
 
 .nav-buttons {
-  @apply flex h-[2.5em] w-[5em] justify-center items-center rounded-2xl bg-surface-secondary font-bold text-base hover:bg-surface-tertiary;
+  @apply flex h-[2.5em] w-[5em] justify-center items-center rounded-2xl bg-surface-secondary font-bold text-base hover:bg-nav-button-background-hover;
 }

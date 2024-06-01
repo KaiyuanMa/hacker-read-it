@@ -20,6 +20,8 @@ const config: Config = {
       "surface-secondary": "var(--grey-200)",
       "surface-tertiary": "var(--grey-700)",
       "surface-brand": "var(--orange-500)",
+      "background-hover": "var(--black-500)",
+      "nav-button-background-hover": "var(--black-400)",
 
       //BORDER
       "border-primary": "var(--grey-100)",

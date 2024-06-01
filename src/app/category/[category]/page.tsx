@@ -55,12 +55,14 @@ export default function Category({ params }: { params: { category: string } }) {
   async function fetchMore() {
     if (items.length !== 0 && items.length >= itemIds.length) return;
     const currIndex = items.length;
-    const currItems = [];
+    const promises = [];
+
     for (let i = currIndex; i <= currIndex + 9 && i < itemIds.length; i++) {
-      const item = await getItem(itemIds[i]);
-      currItems.push(item);
+      promises.push(getItem(itemIds[i]));
     }
-    setItems([...items, ...currItems]);
+
+    const results = await Promise.all(promises);
+    setItems([...items, ...results]);
   }
 
   const lastElementRef = useCallback(
@@ -84,7 +86,11 @@ export default function Category({ params }: { params: { category: string } }) {
   return (
     <main>
       {items.map((item) => (
-        <Story {...item} key={item.id} />
+        <div className="border-b border-border-primary">
+          <div className="hover:bg-background-hover my-1 px-4 rounded-md">
+            <Story {...item} key={item.id} />
+          </div>
+        </div>
       ))}
       {loading ? <Loading /> : ""}
       <div ref={lastElementRef} style={{ height: "5px" }}></div>

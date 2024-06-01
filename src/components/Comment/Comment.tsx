@@ -4,6 +4,11 @@ import React, { useEffect, useState } from "react";
 import ItemHeader from "../ItemHeader";
 import Up from "../../../public/up.svg";
 import CommentSVG from "../../../public/comment.svg";
+import ChildrenThreadLine from "./ChildrenThreadLine";
+import CommentHeader from "./CommentHeader";
+import CommentContent from "./CommentContent";
+import CommentUtil from "./CommentUtil";
+import Loading from "../Loading";
 
 export default function Comment({
   id,
@@ -30,35 +35,19 @@ export default function Comment({
     <>
       {comment !== undefined ? (
         <>
-          {isChildren ? (
-            <div
-              className={`threadline flex justify-end align-start relative pointer-events-none ${
-                isLastChildren ? "bg-surface-primary" : ""
-              }`}
-            >
-              <div
-                className={`box-border h-4 border-1 border-border-tertiary border-solid border-b-[1px] w-[calc(50%+0.5px)] rounded-bl-[12px] "border-l-[1px]" ${
-                  isLastChildren ? "border-l-[1px]" : ""
-                }`}
-              />
-            </div>
-          ) : (
-            <div />
-          )}
+          <ChildrenThreadLine
+            isChildren={isChildren}
+            isLastChildren={isLastChildren}
+          />
           <div>
-            <div className="grid grid-cols-[32px_minmax(0,1fr)]">
-              <div className="bg-surface-secondary w-8 h-8 text-text-primary flex justify-center items-center text-sm font-semibold">
-                {!comment.deleted ? comment.by[0].toUpperCase() : ""}
-              </div>
-              <div className="ml-2">
-                <ItemHeader
-                  by={!comment.deleted ? comment.by : "[deleted]"}
-                  time={comment.time}
-                />
-              </div>
-            </div>
+            <CommentHeader
+              deleted={comment.deleted || false}
+              by={comment.by}
+              time={comment.time}
+            />
 
             <div className="grid grid-cols-[32px_1fr] relative">
+              {/* Main Thread Line */}
               <div
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -70,38 +59,11 @@ export default function Comment({
                   ""
                 )}
               </div>
-              <div className="contents">
-                <div />
-                <div
-                  className="story-text-expanded | block text-sm text-text-primary font-light ml-2"
-                  dangerouslySetInnerHTML={{ __html: comment.text }}
-                />
-              </div>
-              {comment.deleted ? (
-                <div className="h-6"></div>
-              ) : (
-                <div className="contents">
-                  <div />
-                  <div className="flex items-center gap-6 py-4 ml-2">
-                    <div className="flex gap-2 items-center">
-                      <div className="w-4 text-text-secondary fill-current">
-                        <Up />
-                      </div>
-                      <span className="text-xs text-text-secondary font-semibold">
-                        Up Vote
-                      </span>
-                    </div>
-                    <div className="flex gap-2 items-center">
-                      <div className="text-text-secondary fill-current text-sm w-[1.1rem]">
-                        <CommentSVG />
-                      </div>
-                      <span className="text-xs text-text-secondary font-semibold">
-                        Reply
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
+
+              <CommentContent text={comment.text} />
+
+              <CommentUtil deleted={comment.deleted || false} />
+
               <div
                 className={`contents w-full ${
                   isHovered

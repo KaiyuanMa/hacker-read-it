@@ -5,7 +5,7 @@ const scheme = process.env.NEXT_PUBLIC_HACKER_NEWS_API_SCHEME;
 const host = process.env.NEXT_PUBLIC_HACKER_NEWS_API_HOST;
 const version = process.env.NEXT_PUBLIC_HACKER_NEWS_API_VERSION;
 
-export const getItem = async (itemId: string | number) => {
+export const getItem = async (itemId: string | number): Promise<BaseItem> => {
   const response = await axios.get(
     `${scheme}://${host}/${version}/item/${itemId}.json?print=pretty`
   );

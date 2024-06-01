@@ -19,10 +19,12 @@ const config: Config = {
       "surface-primary": "var(--black-700)",
       "surface-secondary": "var(--grey-200)",
       "surface-tertiary": "var(--grey-700)",
+      "surface-brand": "var(--orange-500)",
 
       //BORDER
       "border-primary": "var(--grey-100)",
       "border-secondary": "var(--grey-400)",
+      "border-tertiary": "var(--grey-200)",
     },
   },
   plugins: [],

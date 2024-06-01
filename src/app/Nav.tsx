@@ -1,8 +1,4 @@
-"use client";
-import { useRouter } from "next/navigation";
-
 export default function Nav() {
-  const router = useRouter();
   return (
     <div className="flex gap-2 py-2 fixed bg-surface-primary w-full max-w-[1000px] border-b border-border-secondary z-10">
       <a href="/category/top_story">

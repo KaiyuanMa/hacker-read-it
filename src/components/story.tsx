@@ -1,6 +1,7 @@
 "use client";
 import { timeAgo } from "@/lib/utils";
 import StoryUtil from "@/components/StoryUtil";
+import { ItemType } from "@/lib/types";
 
 type StoryProps = {
   id: number;
@@ -11,12 +12,17 @@ type StoryProps = {
   text?: string;
   score: number;
   descendants: number;
+  type: ItemType;
 };
 
 export default function Story(props: StoryProps) {
   return (
     <div className="flex flex-col w-full gap-2 py-4 h-fit relative p-1">
-      <a href={`/item/${props.id}`} className="absolute inset-0" />
+      {props.type === "job" ? (
+        <a href={props.url} className="absolute inset-0" target="_blank" />
+      ) : (
+        <a href={`/item/${props.id}`} className="absolute inset-0" />
+      )}
       <div>
         <div className="flex items-center gap-2 text-text-tertiary text-sm">
           <div className="font-semibold">{props.by}</div>
@@ -32,11 +38,15 @@ export default function Story(props: StoryProps) {
       ) : (
         ""
       )}
-      <StoryUtil
-        url={props.url}
-        score={props.score}
-        descendants={props.descendants}
-      />
+      {props.type === "job" ? (
+        ""
+      ) : (
+        <StoryUtil
+          url={props.url}
+          score={props.score}
+          descendants={props.descendants}
+        />
+      )}
     </div>
   );
 }

@@ -86,9 +86,9 @@ export default function Category({ params }: { params: { category: string } }) {
   return (
     <main>
       {items.map((item) => (
-        <div className="border-b border-border-primary">
+        <div className="border-b border-border-primary" key={item.id}>
           <div className="hover:bg-background-hover my-1 px-4 rounded-md">
-            <Story {...item} key={item.id} />
+            <Story {...item} />
           </div>
         </div>
       ))}

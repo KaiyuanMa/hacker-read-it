@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import StoryUtil from "@/components/StoryUtil";
 import Loading from "@/components/Loading";
 import Comment from "@/components/Comment/Comment";
+import Comments from "../../../../public/comments.svg";
+import ItemHeader from "@/components/ItemHeader";
 
 export default function Item({ params }: { params: { itemId: string } }) {
   const [item, setItem] = useState<BaseItem>();
@@ -28,8 +30,7 @@ export default function Item({ params }: { params: { itemId: string } }) {
       ) : item !== undefined ? (
         <div className="flex flex-col w-full gap-4 py-4">
           <div className="flex flex-col gap-2">
-            <div className="font-semibold">{item.by}</div>
-            <div className="font-light">{timeAgo(item.time)}</div>
+            <ItemHeader by={item.by} time={item.time} />
             <h2 className="font-semibold text-2xl">{item.title}</h2>
             {item.text !== undefined ? (
               <div
@@ -46,23 +47,40 @@ export default function Item({ params }: { params: { itemId: string } }) {
             />
           </div>
           <div>
-            <button className="rounded-full px-4 py-1 border border-border-secondary">
+            <button className="rounded-full px-4 py-1 border border-border-secondary text-sm font-medium hover:border-border-button-hover">
               Add Comment
             </button>
           </div>
-          <div className="text-sm text-text-tertiary">
+          {/* <div className="text-sm text-text-tertiary">
             <div>Sort by:</div>
-          </div>
-          <div className="flex flex-col gap-4 ">
-            {item.kids?.map((id) => (
-              <Comment
-                id={id}
-                key={id}
-                isChildren={false}
-                isLastChildren={false}
-              />
-            ))}
-          </div>
+          </div> */}
+          {item.kids === undefined || item.kids.length === 0 ? (
+            <div className="flex gap-5 my-8 items-center">
+              <div className="w-16 h-16">
+                <Comments />
+              </div>
+              <div>
+                <h2 className="text-lg font-medium">
+                  Be the first hacker to comment
+                </h2>
+                <div className="text-text-tertiary text-sm mt-4">
+                  <p>Nobody's responded to this post yet.</p>
+                  <p>Add your thoughts and get the conversation going.</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4 ">
+              {item.kids?.map((id) => (
+                <Comment
+                  id={id}
+                  key={id}
+                  isChildren={false}
+                  isLastChildren={false}
+                />
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         ""

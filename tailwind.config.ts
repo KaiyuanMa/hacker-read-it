@@ -27,6 +27,7 @@ const config: Config = {
       "border-primary": "var(--grey-100)",
       "border-secondary": "var(--grey-400)",
       "border-tertiary": "var(--grey-200)",
+      "border-button-hover": "var(--white)",
     },
   },
   plugins: [],

@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="text-text-primary max-w-[1000px] mx-auto">
+    <html lang="en" className="text-text-primary max-w-[1000px] mx-auto px-5">
       <body className={`${inter.className} bg-surface-primary relative`}>
         <Nav />
         <main className="pt-16">{children}</main>

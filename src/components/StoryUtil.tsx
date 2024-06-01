@@ -20,16 +20,16 @@ export default function StoryUtil(props: StoryUtilProps) {
         </a>
       </div>
       <div className="flex gap-4">
-        <div className="flex gap-2 items-center">
-          <div className="text-text-secondary fill-current text-sm w-4">
+        <div className="flex gap-2 items-center justify-center">
+          <button className="text-text-secondary fill-current text-sm w-4 hover:text-text-primary">
             <Up />
-          </div>
+          </button>
           <span className="text-sm">{props.score}</span>
         </div>
         <div className="flex gap-2 items-center">
-          <div className="text-text-secondary fill-current text-sm w-[1.1rem]">
+          <button className="text-text-secondary fill-current text-sm w-[1.1rem] hover:text-text-primary">
             <Comment />
-          </div>
+          </button>
           <span className="text-sm">{props.descendants}</span>
         </div>
       </div>

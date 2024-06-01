@@ -58,7 +58,7 @@ export const getShows = async (): Promise<number[]> => {
 
 export const getJobs = async (): Promise<number[]> => {
   const response = await axios.get(
-    `${scheme}://${host}/${version}/showstories.json?print=pretty`
+    `${scheme}://${host}/${version}/jobstories.json?print=pretty`
   );
   return response.data;
 };

@@ -64,7 +64,7 @@ export default function Item({ params }: { params: { itemId: string } }) {
                   Be the first hacker to comment
                 </h2>
                 <div className="text-text-tertiary text-sm mt-4">
-                  <p>Nobody's responded to this post yet.</p>
+                  <p>Nobody&apos;s responded to this post yet.</p>
                   <p>Add your thoughts and get the conversation going.</p>
                 </div>
               </div>

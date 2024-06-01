@@ -10,8 +10,8 @@ type StoryProps = {
   time: number;
   url?: string;
   text?: string;
-  score: number;
-  descendants: number;
+  score?: number;
+  descendants?: number;
   type: ItemType;
 };
 
@@ -43,8 +43,8 @@ export default function Story(props: StoryProps) {
       ) : (
         <StoryUtil
           url={props.url}
-          score={props.score}
-          descendants={props.descendants}
+          score={props.score!}
+          descendants={props.descendants!}
         />
       )}
     </div>

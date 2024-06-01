@@ -1,5 +1,5 @@
 "use client";
-import Story from "@/components/story";
+import Story from "@/components/Story";
 import {
   getAsks,
   getBestStories,

@@ -1,14 +1,10 @@
 import { getItem } from "@/lib/api";
 import { CommentItem } from "@/lib/types";
 import React, { useEffect, useState } from "react";
-import ItemHeader from "../ItemHeader";
-import Up from "../../../public/up.svg";
-import CommentSVG from "../../../public/comment.svg";
 import ChildrenThreadLine from "./ChildrenThreadLine";
 import CommentHeader from "./CommentHeader";
 import CommentContent from "./CommentContent";
 import CommentUtil from "./CommentUtil";
-import Loading from "../Loading";
 
 export default function Comment({
   id,

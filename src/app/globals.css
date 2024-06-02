@@ -33,6 +33,16 @@
   margin-top: 1rem;
 }
 
+.story-text-expanded pre {
+  @apply overflow-auto p-2 whitespace-pre-wrap rounded-xl border-2 bg-[#181c1f] border-border-tertiary mb-4;
+}
+
+.story-text-expanded code {
+  font-family: Monaco, Menlo, Consolas, Courier New, monospace !important;
+  font-size: 12px;
+  @apply font-thin;
+}
+
 svg {
   fill: currentColor;
   /* height: 16px;

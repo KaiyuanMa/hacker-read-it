@@ -1,6 +1,6 @@
 export default function Nav() {
   return (
-    <div className="flex gap-2 py-2 fixed bg-surface-primary w-full max-w-[1000px] border-b border-border-secondary z-10">
+    <div className="flex gap-2 py-2 fixed bg-surface-primary w-full max-w-[1000px] border-b border-border-secondary z-50">
       <a href="/category/top_story">
         <button className="nav-buttons">Top</button>
       </a>

@@ -1,12 +1,13 @@
 "use client";
 import { getItem } from "@/lib/api";
 import { BaseItem, CommentItem } from "@/lib/types";
-import { fetchComments } from "@/lib/utils";
+import { fetchComments as fetchCommentsApi } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import StoryUtil from "@/components/StoryUtil";
 import Loading from "@/components/Loading";
 import Comment from "@/components/Comment/Comment";
 import Comments from "../../../../public/comments.svg";
+import ChevronDown from "../../../../public/chevron-down.svg";
 import ItemHeader from "@/components/ItemHeader";
 
 export default function Item({ params }: { params: { itemId: string } }) {
@@ -14,20 +15,27 @@ export default function Item({ params }: { params: { itemId: string } }) {
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<CommentItem[]>([]);
 
+  async function fetchData() {
+    setLoading(true);
+    const _item = await getItem(params.itemId);
+    setItem(_item);
+    await fetchComments(9, _item);
+    setLoading(false);
+  }
+
+  async function fetchComments(fetchCount: number, item: BaseItem) {
+    if (item === undefined || item.kids === undefined) return;
+    const _comments = await fetchCommentsApi(
+      fetchCount,
+      item.kids,
+      comments.length
+    );
+    setComments([...comments, ..._comments]);
+    console.log(comments);
+  }
+
   useEffect(() => {
     fetchData();
-
-    async function fetchData() {
-      setLoading(true);
-      const _item = await getItem(params.itemId);
-      setItem(_item);
-      if (_item.kids !== undefined) {
-        const _comments = await fetchComments(9, _item.kids, comments.length);
-        setComments([...comments, ..._comments]);
-      }
-
-      setLoading(false);
-    }
   }, [params.itemId]);
 
   return (
@@ -87,6 +95,21 @@ export default function Item({ params }: { params: { itemId: string } }) {
                   layersDeepFromLoad={0}
                 />
               ))}
+              {item.kids !== undefined && item.kids.length > comments.length ? (
+                <div>
+                  <button
+                    onClick={async () => await fetchComments(9, item)}
+                    className="flex items-center gap-2 bg-surface-brand rounded-full py-2 px-4"
+                  >
+                    <div className="fill-current text-sm w-[1.1rem] group-hover:text-text-primary">
+                      <ChevronDown />
+                    </div>
+                    <p className="text-sm font-medium">View more comments</p>
+                  </button>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           )}
         </div>

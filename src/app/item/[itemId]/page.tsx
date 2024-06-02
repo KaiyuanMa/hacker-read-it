@@ -16,19 +16,19 @@ export default function Item({ params }: { params: { itemId: string } }) {
 
   useEffect(() => {
     fetchData();
-  }, []);
 
-  async function fetchData() {
-    setLoading(true);
-    const _item = await getItem(params.itemId);
-    setItem(_item);
-    if (_item.kids !== undefined) {
-      const _comments = await fetchComments(9, _item.kids, comments.length);
-      setComments([...comments, ..._comments]);
+    async function fetchData() {
+      setLoading(true);
+      const _item = await getItem(params.itemId);
+      setItem(_item);
+      if (_item.kids !== undefined) {
+        const _comments = await fetchComments(9, _item.kids, comments.length);
+        setComments([...comments, ..._comments]);
+      }
+
+      setLoading(false);
     }
-
-    setLoading(false);
-  }
+  }, [comments, params.itemId]);
 
   return (
     <main>
@@ -84,6 +84,7 @@ export default function Item({ params }: { params: { itemId: string } }) {
                   commentItem={comment}
                   key={comment.id}
                   isLastChildren={false}
+                  layersDeepFromLoad={0}
                 />
               ))}
             </div>

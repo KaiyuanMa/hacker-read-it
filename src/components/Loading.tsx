@@ -1,7 +1,8 @@
 export default function Loading() {
   return (
     <svg
-      className="h-7 w-7 text-white animate-spin mx-auto mt-1"
+      // className="h-7 w-7 text-white animate-spin mx-auto mt-1"
+      className="h-7 w-7 text-white animate-spin mt-1"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

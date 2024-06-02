@@ -1,7 +1,7 @@
 "use client";
 import { getItem } from "@/lib/api";
-import { BaseItem } from "@/lib/types";
-import { timeAgo } from "@/lib/utils";
+import { BaseItem, CommentItem } from "@/lib/types";
+import { fetchComments } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import StoryUtil from "@/components/StoryUtil";
 import Loading from "@/components/Loading";
@@ -12,6 +12,7 @@ import ItemHeader from "@/components/ItemHeader";
 export default function Item({ params }: { params: { itemId: string } }) {
   const [item, setItem] = useState<BaseItem>();
   const [loading, setLoading] = useState(true);
+  const [comments, setComments] = useState<CommentItem[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -21,8 +22,14 @@ export default function Item({ params }: { params: { itemId: string } }) {
     setLoading(true);
     const _item = await getItem(params.itemId);
     setItem(_item);
+    if (_item.kids !== undefined) {
+      const _comments = await fetchComments(9, _item.kids, comments.length);
+      setComments([...comments, ..._comments]);
+    }
+
     setLoading(false);
   }
+
   return (
     <main>
       {loading ? (
@@ -71,11 +78,11 @@ export default function Item({ params }: { params: { itemId: string } }) {
             </div>
           ) : (
             <div className="flex flex-col gap-4 ">
-              {item.kids?.map((id) => (
+              {comments.map((comment) => (
                 <Comment
-                  id={id}
-                  key={id}
-                  isChildren={false}
+                  parentIsComment={false}
+                  commentItem={comment}
+                  key={comment.id}
                   isLastChildren={false}
                 />
               ))}

@@ -24,7 +24,6 @@ export default function Category({ params }: { params: { category: string } }) {
   }, []);
 
   async function fetchData() {
-    setLoading(true);
     let itemIds: number[] = [];
     switch (params.category) {
       case "top_story":
@@ -47,17 +46,21 @@ export default function Category({ params }: { params: { category: string } }) {
         break;
     }
     setItemIds(itemIds);
-    await fetchMore();
+    await fetchMore(9);
     setItems(items);
     setLoading(false);
   }
 
-  async function fetchMore() {
+  async function fetchMore(fetchCount: number) {
     if (items.length !== 0 && items.length >= itemIds.length) return;
     const currIndex = items.length;
     const promises = [];
 
-    for (let i = currIndex; i <= currIndex + 9 && i < itemIds.length; i++) {
+    for (
+      let i = currIndex;
+      i <= currIndex + fetchCount && i < itemIds.length;
+      i++
+    ) {
       promises.push(getItem(itemIds[i]));
     }
 

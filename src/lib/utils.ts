@@ -1,3 +1,6 @@
+import { getItem } from "./api";
+import { BaseItem, CommentItem } from "./types";
+
 export function timeAgo(timestamp: number) {
   const now = Date.now() / 1000;
   const secondsAgo = now - timestamp;
@@ -19,4 +22,23 @@ export function timeAgo(timestamp: number) {
     }
   }
   return "just now";
+}
+
+export async function fetchComments(
+  fetchCount: number,
+  kids: number[],
+  currIndex: number
+): Promise<CommentItem[]> {
+  if (kids.length === 0) return [];
+  const promises = [];
+  for (
+    let i = currIndex;
+    i <= currIndex + fetchCount - 1 && i < kids.length;
+    i++
+  ) {
+    promises.push(getItem(kids[i]));
+  }
+
+  const comments = await Promise.all(promises);
+  return comments as CommentItem[];
 }

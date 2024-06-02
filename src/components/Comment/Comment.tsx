@@ -25,33 +25,29 @@ export default function Comment({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isChildrenCollapsed, setIsChildrenCollapsed] = useState(false);
 
-  const fetchData = useCallback(
-    async (fetchCount: number) => {
-      if (commentItem.kids !== undefined && commentItem.kids.length > 0) {
-        const _childrenComment = await fetchComments(
-          fetchCount,
-          commentItem.kids,
-          childrenComments.length
-        );
-        setChildrenComments([...childrenComments, ..._childrenComment]);
-      }
-    },
-    [childrenComments, commentItem.kids]
-  );
+  async function fetchData(fetchCount: number) {
+    if (commentItem.kids !== undefined && commentItem.kids.length > 0) {
+      const _childrenComment = await fetchComments(
+        fetchCount,
+        commentItem.kids,
+        childrenComments.length
+      );
+      setChildrenComments([...childrenComments, ..._childrenComment]);
+    }
+  }
 
-  const computeFetchCount = useCallback(() => {
+  function computeFetchCount() {
     if (layersDeepFromLoad >= 1) return 0;
     if (commentItem.kids !== undefined && commentItem.kids.length > 0) {
       if (commentItem.kids.length > 2) return 2;
       return commentItem.kids.length;
     }
     return 0;
-  }, [commentItem.kids, layersDeepFromLoad]);
-
+  }
   useEffect(() => {
     const fetchCount = computeFetchCount();
     fetchData(fetchCount);
-  }, [computeFetchCount, fetchData]);
+  }, []);
 
   async function loadMoreComment() {
     setIsLoadingMoreComments((pre) => !pre);

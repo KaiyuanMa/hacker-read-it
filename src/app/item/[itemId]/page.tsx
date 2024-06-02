@@ -28,7 +28,7 @@ export default function Item({ params }: { params: { itemId: string } }) {
 
       setLoading(false);
     }
-  }, [comments, params.itemId]);
+  }, [params.itemId]);
 
   return (
     <main>

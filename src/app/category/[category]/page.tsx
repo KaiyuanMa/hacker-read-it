@@ -19,56 +19,53 @@ export default function Category({ params }: { params: { category: string } }) {
   const [loading, setLoading] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  const fetchMore = useCallback(
-    async (fetchCount: number) => {
-      if (items.length !== 0 && items.length >= itemIds.length) return;
-      const currIndex = items.length;
-      const promises = [];
-      for (
-        let i = currIndex;
-        i <= currIndex + fetchCount && i < itemIds.length;
-        i++
-      ) {
-        promises.push(getItem(itemIds[i]));
-      }
-      const results = await Promise.all(promises);
-
-      setItems([...items, ...results]);
-    },
-    [items, itemIds]
-  );
-
   useEffect(() => {
-    async function fetchData() {
-      let itemIds: number[] = [];
-      switch (params.category) {
-        case "top_story":
-          itemIds = await getTopStories();
-          break;
-        case "best_story":
-          itemIds = await getBestStories();
-          break;
-        case "new_story":
-          itemIds = await getNewStories();
-          break;
-        case "ask":
-          itemIds = await getAsks();
-          break;
-        case "show":
-          itemIds = await getShows();
-          break;
-        case "job":
-          itemIds = await getJobs();
-          break;
-      }
-      setItemIds(itemIds);
-      await fetchMore(9);
-      setItems(items);
-      setLoading(false);
-    }
-
     fetchData();
-  }, [fetchMore, items, params.category]);
+  }, []);
+
+  async function fetchMore(fetchCount: number) {
+    if (items.length !== 0 && items.length >= itemIds.length) return;
+    const currIndex = items.length;
+    const promises = [];
+    for (
+      let i = currIndex;
+      i <= currIndex + fetchCount && i < itemIds.length;
+      i++
+    ) {
+      promises.push(getItem(itemIds[i]));
+    }
+    const results = await Promise.all(promises);
+
+    setItems([...items, ...results]);
+  }
+
+  async function fetchData() {
+    let itemIds: number[] = [];
+    switch (params.category) {
+      case "top_story":
+        itemIds = await getTopStories();
+        break;
+      case "best_story":
+        itemIds = await getBestStories();
+        break;
+      case "new_story":
+        itemIds = await getNewStories();
+        break;
+      case "ask":
+        itemIds = await getAsks();
+        break;
+      case "show":
+        itemIds = await getShows();
+        break;
+      case "job":
+        itemIds = await getJobs();
+        break;
+    }
+    setItemIds(itemIds);
+    await fetchMore(9);
+    setItems(items);
+    setLoading(false);
+  }
 
   const lastElementRef = useCallback(
     (node: HTMLElement | null) => {

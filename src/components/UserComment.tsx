@@ -6,7 +6,8 @@ import UserName from "@/components/UserName";
 
 // One comment in a user's history, with the story it was posted on.
 export default function UserComment({ comment }: { comment: BaseItem }) {
-  const [story, setStory] = useState<BaseItem | null>(null);
+  // undefined = still looking, null = couldn't find the story
+  const [story, setStory] = useState<BaseItem | null | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -23,19 +24,25 @@ export default function UserComment({ comment }: { comment: BaseItem }) {
 
   return (
     <div className="flex flex-col w-full gap-2 py-4 h-fit relative p-1">
-      <a href={threadHref} className="absolute inset-0" />
+      <a
+        href={threadHref}
+        className="absolute inset-0"
+        aria-label="Open thread"
+      />
       <div className="flex flex-wrap items-center gap-x-2 text-text-tertiary text-sm">
         <UserName username={comment.by} />
         <span className="font-light">commented on</span>
-        {story ? (
+        {story === undefined ? (
+          <span className="font-light">…</span>
+        ) : story === null || story.deleted || !story.title ? (
+          <span className="font-light italic">a deleted post</span>
+        ) : (
           <a
             href={`/item/${story.id}`}
             className="relative font-semibold text-text-primary hover:underline truncate max-w-full"
           >
-            {story.title || "a deleted post"}
+            {story.title}
           </a>
-        ) : (
-          <span className="font-light">…</span>
         )}
         <span className="font-light">{timeAgo(comment.time)}</span>
       </div>

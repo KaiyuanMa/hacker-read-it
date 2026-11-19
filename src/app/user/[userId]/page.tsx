@@ -18,9 +18,9 @@ const MIN_NEW_MATCHES = 10;
 // ...but never more than this many pages per load.
 const MAX_PAGES_PER_LOAD = 5;
 
-type Filter = "posts" | "comments";
+type Tab = "posts" | "comments";
 
-const FILTERS: { value: Filter; label: string }[] = [
+const TABS: { value: Tab; label: string }[] = [
   { value: "posts", label: "Posts" },
   { value: "comments", label: "Comments" },
 ];
@@ -32,8 +32,8 @@ function isVisible(item: BaseItem | null): item is BaseItem {
   );
 }
 
-function matchesFilter(item: BaseItem, filter: Filter) {
-  if (filter === "posts") return item.type !== "comment";
+function matchesTab(item: BaseItem, tab: Tab) {
+  if (tab === "posts") return item.type !== "comment";
   return item.type === "comment";
 }
 
@@ -44,12 +44,12 @@ async function fetchPage(ids: number[]): Promise<BaseItem[]> {
   return results.filter(isVisible);
 }
 
-// Fetch pages from `startIndex` until enough items for `filter` show up,
+// Fetch pages from `startIndex` until enough items for `tab` show up,
 // or we run out of ids, or hit the page limit.
 async function fetchUntilEnough(
   submitted: number[],
   startIndex: number,
-  filter: Filter
+  tab: Tab
 ): Promise<{ items: BaseItem[]; nextIndex: number }> {
   let index = startIndex;
   const items: BaseItem[] = [];
@@ -64,15 +64,23 @@ async function fetchUntilEnough(
     const ids = submitted.slice(index, index + PAGE_SIZE);
     const pageItems = await fetchPage(ids);
     items.push(...pageItems);
-    matches += pageItems.filter((item) => matchesFilter(item, filter)).length;
+    matches += pageItems.filter((item) => matchesTab(item, tab)).length;
     index += ids.length;
     pages++;
   }
   return { items, nextIndex: index };
 }
 
+function decodeUserId(raw: string) {
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw; // malformed %-escape in the URL; use it as typed
+  }
+}
+
 export default function UserPage({ params }: { params: { userId: string } }) {
-  const userId = decodeURIComponent(params.userId);
+  const userId = decodeUserId(params.userId);
 
   // undefined = still loading, null = no such user
   const [user, setUser] = useState<UserItem | null | undefined>(undefined);
@@ -80,11 +88,15 @@ export default function UserPage({ params }: { params: { userId: string } }) {
   const [items, setItems] = useState<BaseItem[]>([]);
   const [nextIndex, setNextIndex] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [filter, setFilter] = useState<Filter>("posts");
+  const [tab, setTab] = useState<Tab>("posts");
 
   const submitted = useMemo(() => user?.submitted ?? [], [user]);
   const hasMore = nextIndex < submitted.length;
-  const visibleItems = items.filter((item) => matchesFilter(item, filter));
+  const visibleItems = items.filter((item) => matchesTab(item, tab));
+  const aboutHtml = useMemo(
+    () => (user?.about ? sanitizeHtml(user.about) : ""),
+    [user]
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -118,19 +130,20 @@ export default function UserPage({ params }: { params: { userId: string } }) {
     };
   }, [userId]);
 
-  async function loadMore(forFilter: Filter = filter) {
+  async function loadMore(forTab: Tab = tab) {
+    if (loadingMore) return;
     setLoadingMore(true);
-    const more = await fetchUntilEnough(submitted, nextIndex, forFilter);
+    const more = await fetchUntilEnough(submitted, nextIndex, forTab);
     setItems((prev) => [...prev, ...more.items]);
     setNextIndex(more.nextIndex);
     setLoadingMore(false);
   }
 
-  function switchTab(next: Filter) {
-    setFilter(next);
+  function switchTab(next: Tab) {
+    setTab(next);
     // If what's loaded so far has few items for this tab, fetch more right away.
-    const loaded = items.filter((item) => matchesFilter(item, next)).length;
-    if (loaded < MIN_NEW_MATCHES && hasMore && !loadingMore) loadMore(next);
+    const loaded = items.filter((item) => matchesTab(item, next)).length;
+    if (loaded < MIN_NEW_MATCHES && hasMore) loadMore(next);
   }
 
   if (error) {
@@ -194,10 +207,10 @@ export default function UserPage({ params }: { params: { userId: string } }) {
 
         <div className="flex flex-col gap-1">
           <h3 className="text-sm font-semibold text-text-tertiary">About</h3>
-          {user.about ? (
+          {aboutHtml ? (
             <div
               className="story-text-expanded | text-sm text-text-secondary [&>p:first-child]:mt-0 [&_a]:text-text-brand [&_a]:break-all [&_a:hover]:underline"
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(user.about) }}
+              dangerouslySetInnerHTML={{ __html: aboutHtml }}
             />
           ) : (
             <p className="text-sm text-text-tertiary font-light">
@@ -207,17 +220,17 @@ export default function UserPage({ params }: { params: { userId: string } }) {
         </div>
 
         <div className="flex gap-2 border-b border-border-primary pb-4">
-          {FILTERS.map((f) => (
+          {TABS.map((t) => (
             <button
-              key={f.value}
-              onClick={() => switchTab(f.value)}
+              key={t.value}
+              onClick={() => switchTab(t.value)}
               className={`rounded-full px-4 py-1 border text-sm font-medium ${
-                filter === f.value
+                tab === t.value
                   ? "bg-surface-secondary border-border-button-hover"
                   : "border-border-secondary hover:border-border-button-hover"
               }`}
             >
-              {f.label}
+              {t.label}
             </button>
           ))}
         </div>
@@ -238,7 +251,7 @@ export default function UserPage({ params }: { params: { userId: string } }) {
       {!loadingMore && visibleItems.length === 0 ? (
         <EmptyState
           title={
-            filter === "posts"
+            tab === "posts"
               ? `u/${user.id} has no posts yet`
               : `u/${user.id} has no comments yet`
           }

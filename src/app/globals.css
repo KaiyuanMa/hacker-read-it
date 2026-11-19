@@ -20,6 +20,17 @@ html {
   background: var(--black-700);
 }
 
+/* Small icon buttons keep their look but get a ~44px invisible tap area */
+.tap-target {
+  position: relative;
+}
+
+.tap-target::before {
+  content: "";
+  position: absolute;
+  inset: -13px;
+}
+
 .no-scrollbar {
   scrollbar-width: none;
 }

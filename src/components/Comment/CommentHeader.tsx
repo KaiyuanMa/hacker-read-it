@@ -22,7 +22,7 @@ export default function CommentHeader({
         <div className="flex w-6 h-6 sm:w-8 sm:h-8 items-center justify-center py-4">
           <button
             onClick={() => setIsCollapsed(false)}
-            className="text-text-primary fill-current text-sm w-[1.1rem] group-hover:text-text-primary bg-surface-primary z-10"
+            className="tap-target text-text-primary fill-current text-sm w-[1.1rem] group-hover:text-text-primary bg-surface-primary z-10"
           >
             <CirclePlus />
           </button>

@@ -25,7 +25,7 @@ function CommentUtil({
             <div className="flex items-center justify-center w-full py-4">
               <button
                 onClick={() => setIsChildrenCollapsed((pre: boolean) => !pre)}
-                className="text-text-primary fill-current text-sm w-[1.1rem] group-hover:text-text-primary bg-surface-primary z-10"
+                className="tap-target text-text-primary fill-current text-sm w-[1.1rem] group-hover:text-text-primary bg-surface-primary z-10"
               >
                 {isChildrenCollapsed ? <CirclePlus /> : <CircleMinus />}
               </button>

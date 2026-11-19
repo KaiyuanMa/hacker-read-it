@@ -29,7 +29,7 @@ export default function Story(props: StoryProps) {
           <UserName username={props.by} />
           <div className="font-light">{timeAgo(props.time)}</div>
         </div>
-        <h2 className="font-semibold text-lg">{props.title}</h2>
+        <h2 className="font-semibold text-lg break-words">{props.title}</h2>
       </div>
       {props.text !== undefined ? (
         <div

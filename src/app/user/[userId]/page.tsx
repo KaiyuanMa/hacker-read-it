@@ -184,15 +184,15 @@ export default function UserPage({ params }: { params: { userId: string } }) {
       <div className="flex flex-col w-full gap-4 py-4">
         <div className="flex items-center gap-4">
           <UserAvatar username={user.id} size="lg" />
-          <div className="flex flex-col gap-1">
-            <h2 className="font-semibold text-2xl">{user.id}</h2>
+          <div className="flex flex-col gap-1 min-w-0">
+            <h2 className="font-semibold text-2xl break-all">{user.id}</h2>
             <div className="text-sm text-text-tertiary font-light">
               u/{user.id}
             </div>
           </div>
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex flex-wrap gap-x-8 gap-y-2">
           <Stat label="Karma" value={user.karma.toLocaleString("en-US")} />
           <Stat
             label="Joined"

@@ -17,9 +17,9 @@ export default function CommentHeader({
   setIsCollapsed: Function;
 }) {
   return (
-    <div className="grid grid-cols-[32px_minmax(0,1fr)]">
+    <div className="grid grid-cols-[24px_minmax(0,1fr)] sm:grid-cols-[32px_minmax(0,1fr)]">
       {isCollapsed ? (
-        <div className="flex w-8 h-8 items-center justify-center py-4">
+        <div className="flex w-6 h-6 sm:w-8 sm:h-8 items-center justify-center py-4">
           <button
             onClick={() => setIsCollapsed(false)}
             className="text-text-primary fill-current text-sm w-[1.1rem] group-hover:text-text-primary bg-surface-primary z-10"

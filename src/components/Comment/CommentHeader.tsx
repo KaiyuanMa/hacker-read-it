@@ -1,5 +1,6 @@
 import React from "react";
 import ItemHeader from "../ItemHeader";
+import UserAvatar from "../UserAvatar";
 import CirclePlus from "../../../public/circle-plus.svg";
 
 export default function CommentHeader({
@@ -27,9 +28,7 @@ export default function CommentHeader({
           </button>
         </div>
       ) : (
-        <div className="bg-surface-secondary w-8 h-8 text-text-primary flex justify-center items-center text-sm font-semibold">
-          {!deleted ? by[0].toUpperCase() : ""}
-        </div>
+        <UserAvatar username={!deleted ? by : ""} link={!deleted} />
       )}
 
       <div className="ml-2">

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BaseItem, ItemType } from "./types";
+import { BaseItem, UserItem } from "./types";
 
 const scheme = process.env.NEXT_PUBLIC_HACKER_NEWS_API_SCHEME;
 const host = process.env.NEXT_PUBLIC_HACKER_NEWS_API_HOST;
@@ -8,6 +8,14 @@ const version = process.env.NEXT_PUBLIC_HACKER_NEWS_API_VERSION;
 export const getItem = async (itemId: string | number): Promise<BaseItem> => {
   const response = await axios.get(
     `${scheme}://${host}/${version}/item/${itemId}.json?print=pretty`
+  );
+  return response.data;
+};
+
+// Returns null when HN has no user with this id.
+export const getUser = async (userId: string): Promise<UserItem | null> => {
+  const response = await axios.get(
+    `${scheme}://${host}/${version}/user/${encodeURIComponent(userId)}.json`
   );
   return response.data;
 };

@@ -2,6 +2,7 @@
 import { timeAgo } from "@/lib/utils";
 import StoryUtil from "@/components/StoryUtil";
 import { ItemType } from "@/lib/types";
+import UserName from "@/components/UserName";
 
 type StoryProps = {
   id: number;
@@ -25,7 +26,7 @@ export default function Story(props: StoryProps) {
       )}
       <div>
         <div className="flex items-center gap-2 text-text-tertiary text-sm">
-          <div className="font-semibold">{props.by}</div>
+          <UserName username={props.by} />
           <div className="font-light">{timeAgo(props.time)}</div>
         </div>
         <h2 className="font-semibold text-lg">{props.title}</h2>

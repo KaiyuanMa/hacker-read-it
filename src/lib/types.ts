@@ -73,3 +73,11 @@ export interface PollOptItem extends BaseItem {
 }
 
 export type ItemType = "job" | "story" | "comment" | "poll" | "pollopt";
+
+export interface UserItem {
+  id: string;
+  created: number;
+  karma: number;
+  about?: string;
+  submitted?: number[];
+}

@@ -42,3 +42,41 @@ export async function fetchComments(
   const comments = await Promise.all(promises);
   return comments as CommentItem[];
 }
+
+export function formatDate(timestamp: number) {
+  return new Date(timestamp * 1000).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+export function userPath(username: string) {
+  return `/user/${encodeURIComponent(username)}`;
+}
+
+// A comment only knows its direct parent, so to find the story it belongs to
+// we walk up the parent chain. Results are cached because comments from the
+// same thread share ancestors.
+const rootStoryCache = new Map<number, Promise<BaseItem | null>>();
+
+export function findRootStory(
+  item: BaseItem,
+  depth = 0
+): Promise<BaseItem | null> {
+  if (item.type !== "comment") return Promise.resolve(item);
+  if (item.parent === undefined || depth > 50) return Promise.resolve(null);
+
+  const parentId = item.parent;
+  let cached = rootStoryCache.get(parentId);
+  if (cached === undefined) {
+    cached = getItem(parentId)
+      .then((parent) => (parent ? findRootStory(parent, depth + 1) : null))
+      .catch(() => {
+        rootStoryCache.delete(parentId);
+        return null;
+      });
+    rootStoryCache.set(parentId, cached);
+  }
+  return cached;
+}

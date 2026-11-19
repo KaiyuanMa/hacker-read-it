@@ -13,15 +13,14 @@ import ChevronDown from "../../../../public/chevron-down.svg";
 
 // `submitted` can hold thousands of ids (newest first), so fetch a page at a time.
 const PAGE_SIZE = 30;
-// When a filter is on, keep fetching pages until this many new matches show up...
+// Keep fetching pages until this many new items for the current tab show up...
 const MIN_NEW_MATCHES = 10;
-// ...but never more than this many pages per click.
+// ...but never more than this many pages per load.
 const MAX_PAGES_PER_LOAD = 5;
 
-type Filter = "all" | "posts" | "comments";
+type Filter = "posts" | "comments";
 
 const FILTERS: { value: Filter; label: string }[] = [
-  { value: "all", label: "Overview" },
   { value: "posts", label: "Posts" },
   { value: "comments", label: "Comments" },
 ];
@@ -35,8 +34,7 @@ function isVisible(item: BaseItem | null): item is BaseItem {
 
 function matchesFilter(item: BaseItem, filter: Filter) {
   if (filter === "posts") return item.type !== "comment";
-  if (filter === "comments") return item.type === "comment";
-  return true;
+  return item.type === "comment";
 }
 
 async function fetchPage(ids: number[]): Promise<BaseItem[]> {
@@ -44,6 +42,33 @@ async function fetchPage(ids: number[]): Promise<BaseItem[]> {
     ids.map((id) => getItem(id).catch(() => null))
   );
   return results.filter(isVisible);
+}
+
+// Fetch pages from `startIndex` until enough items for `filter` show up,
+// or we run out of ids, or hit the page limit.
+async function fetchUntilEnough(
+  submitted: number[],
+  startIndex: number,
+  filter: Filter
+): Promise<{ items: BaseItem[]; nextIndex: number }> {
+  let index = startIndex;
+  const items: BaseItem[] = [];
+  let matches = 0;
+  let pages = 0;
+
+  while (
+    index < submitted.length &&
+    pages < MAX_PAGES_PER_LOAD &&
+    (pages === 0 || matches < MIN_NEW_MATCHES)
+  ) {
+    const ids = submitted.slice(index, index + PAGE_SIZE);
+    const pageItems = await fetchPage(ids);
+    items.push(...pageItems);
+    matches += pageItems.filter((item) => matchesFilter(item, filter)).length;
+    index += ids.length;
+    pages++;
+  }
+  return { items, nextIndex: index };
 }
 
 export default function UserPage({ params }: { params: { userId: string } }) {
@@ -55,7 +80,7 @@ export default function UserPage({ params }: { params: { userId: string } }) {
   const [items, setItems] = useState<BaseItem[]>([]);
   const [nextIndex, setNextIndex] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [filter, setFilter] = useState<Filter>("all");
+  const [filter, setFilter] = useState<Filter>("posts");
 
   const submitted = useMemo(() => user?.submitted ?? [], [user]);
   const hasMore = nextIndex < submitted.length;
@@ -76,11 +101,10 @@ export default function UserPage({ params }: { params: { userId: string } }) {
         if (!_user?.submitted?.length) return;
 
         setLoadingMore(true);
-        const firstIds = _user.submitted.slice(0, PAGE_SIZE);
-        const firstItems = await fetchPage(firstIds);
+        const first = await fetchUntilEnough(_user.submitted, 0, "posts");
         if (cancelled) return;
-        setItems(firstItems);
-        setNextIndex(firstIds.length);
+        setItems(first.items);
+        setNextIndex(first.nextIndex);
       } catch {
         if (!cancelled) setError(true);
       } finally {
@@ -94,31 +118,19 @@ export default function UserPage({ params }: { params: { userId: string } }) {
     };
   }, [userId]);
 
-  async function loadMore() {
+  async function loadMore(forFilter: Filter = filter) {
     setLoadingMore(true);
-    let index = nextIndex;
-    const newItems: BaseItem[] = [];
-    let newMatches = 0;
-    let pages = 0;
-
-    while (
-      index < submitted.length &&
-      pages < MAX_PAGES_PER_LOAD &&
-      (pages === 0 || newMatches < MIN_NEW_MATCHES)
-    ) {
-      const ids = submitted.slice(index, index + PAGE_SIZE);
-      const pageItems = await fetchPage(ids);
-      newItems.push(...pageItems);
-      newMatches += pageItems.filter((item) =>
-        matchesFilter(item, filter)
-      ).length;
-      index += ids.length;
-      pages++;
-    }
-
-    setItems((prev) => [...prev, ...newItems]);
-    setNextIndex(index);
+    const more = await fetchUntilEnough(submitted, nextIndex, forFilter);
+    setItems((prev) => [...prev, ...more.items]);
+    setNextIndex(more.nextIndex);
     setLoadingMore(false);
+  }
+
+  function switchTab(next: Filter) {
+    setFilter(next);
+    // If what's loaded so far has few items for this tab, fetch more right away.
+    const loaded = items.filter((item) => matchesFilter(item, next)).length;
+    if (loaded < MIN_NEW_MATCHES && hasMore && !loadingMore) loadMore(next);
   }
 
   if (error) {
@@ -198,7 +210,7 @@ export default function UserPage({ params }: { params: { userId: string } }) {
           {FILTERS.map((f) => (
             <button
               key={f.value}
-              onClick={() => setFilter(f.value)}
+              onClick={() => switchTab(f.value)}
               className={`rounded-full px-4 py-1 border text-sm font-medium ${
                 filter === f.value
                   ? "bg-surface-secondary border-border-button-hover"
@@ -226,17 +238,14 @@ export default function UserPage({ params }: { params: { userId: string } }) {
       {!loadingMore && visibleItems.length === 0 ? (
         <EmptyState
           title={
-            submitted.length === 0
-              ? `u/${user.id} hasn't posted anything yet`
-              : "Nothing here yet"
+            filter === "posts"
+              ? `u/${user.id} has no posts yet`
+              : `u/${user.id} has no comments yet`
           }
           lines={
             hasMore
-              ? [
-                  "Nothing of this kind in the most recent activity.",
-                  "Try loading more below.",
-                ]
-              : ["No posts or comments to show."]
+              ? [`None in their recent activity.`, "Try loading more below."]
+              : [`Nothing to show here.`]
           }
         />
       ) : (
@@ -248,7 +257,7 @@ export default function UserPage({ params }: { params: { userId: string } }) {
           <Loading />
         ) : hasMore ? (
           <button
-            onClick={loadMore}
+            onClick={() => loadMore()}
             className="flex items-center gap-2 bg-surface-brand rounded-full py-2 px-4"
           >
             <div className="fill-current text-sm w-[1.1rem]">

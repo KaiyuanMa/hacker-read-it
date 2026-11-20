@@ -46,7 +46,9 @@ export default function Item({ params }: { params: { itemId: string } }) {
         <div className="flex flex-col w-full gap-4 py-4">
           <div className="flex flex-col gap-2">
             <ItemHeader by={item.by} time={item.time} />
-            <h2 className="font-semibold text-2xl">{item.title}</h2>
+            <h2 className="font-semibold text-xl sm:text-2xl break-words">
+              {item.title}
+            </h2>
             {item.text !== undefined ? (
               <div
                 className="story-text-expanded | text-sm text-text-secondary"

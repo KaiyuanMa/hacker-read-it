@@ -11,7 +11,11 @@ export default function UserAvatar({
   size?: "sm" | "lg";
   link?: boolean;
 }) {
-  const sizeClass = size === "lg" ? "w-16 h-16 text-2xl" : "w-8 h-8 text-sm";
+  // The small one shrinks a little on phones so nested comments keep more room.
+  const sizeClass =
+    size === "lg"
+      ? "w-16 h-16 text-2xl"
+      : "w-6 h-6 text-xs sm:w-8 sm:h-8 sm:text-sm";
   const avatar = (
     <div
       className={`bg-surface-secondary ${sizeClass} text-text-primary flex justify-center items-center font-semibold`}

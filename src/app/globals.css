@@ -16,6 +16,29 @@
   --orange-500: #ff6600;
 }
 
+html {
+  background: var(--black-700);
+}
+
+/* Small icon buttons keep their look but get a ~44px invisible tap area */
+.tap-target {
+  position: relative;
+}
+
+.tap-target::before {
+  content: "";
+  position: absolute;
+  inset: -13px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .story-text {
   display: inline-block;
   overflow: hidden;
@@ -23,6 +46,12 @@
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
+}
+
+/* Long URLs and words in HN text wrap instead of widening the page on phones */
+.story-text,
+.story-text-expanded {
+  overflow-wrap: anywhere;
 }
 
 .story-text p {
@@ -50,5 +79,5 @@ svg {
 }
 
 .nav-buttons {
-  @apply flex h-[2.5em] w-[5em] justify-center items-center rounded-2xl bg-surface-secondary font-bold text-base hover:bg-nav-button-background-hover;
+  @apply flex h-9 px-2.5 text-sm sm:h-[2.5em] sm:w-[5em] sm:px-0 sm:text-base justify-center items-center rounded-2xl bg-surface-secondary font-bold hover:bg-nav-button-background-hover;
 }

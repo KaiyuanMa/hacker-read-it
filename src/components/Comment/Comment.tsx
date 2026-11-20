@@ -74,12 +74,12 @@ export default function Comment({
             {isCollapsed ? (
               ""
             ) : (
-              <div className="grid grid-cols-[32px_1fr] relative">
+              <div className="grid grid-cols-[24px_minmax(0,1fr)] sm:grid-cols-[32px_minmax(0,1fr)] relative">
                 <div
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                   onClick={() => setIsCollapsed(true)}
-                  className="absolute top-0 left-0 bottom-0 w-8 flex justify-center items-center z-0 cursor-pointer group mb-5"
+                  className="absolute top-0 left-0 bottom-0 w-6 sm:w-8 flex justify-center items-center z-0 cursor-pointer group mb-5"
                 >
                   {commentItem.kids !== undefined ? (
                     <div className="w-[1px] h-full group-hover:bg-surface-tertiary bg-surface-secondary" />

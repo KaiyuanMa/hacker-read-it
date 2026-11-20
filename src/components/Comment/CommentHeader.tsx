@@ -1,14 +1,17 @@
 import React from "react";
 import ItemHeader from "../ItemHeader";
 import CirclePlus from "../../../public/circle-plus.svg";
+import CommentMenu from "./CommentMenu";
 
 export default function CommentHeader({
+  id,
   deleted,
   by,
   time,
   isCollapsed,
   setIsCollapsed,
 }: {
+  id: number;
   deleted: boolean;
   by: string;
   time: number;
@@ -32,8 +35,9 @@ export default function CommentHeader({
         </div>
       )}
 
-      <div className="ml-2">
+      <div className="ml-2 flex items-center gap-1">
         <ItemHeader by={!deleted ? by : "[deleted]"} time={time} />
+        {deleted ? "" : <CommentMenu commentId={id} />}
       </div>
     </div>
   );

@@ -67,6 +67,7 @@ export default function Comment({
           />
           <div>
             <CommentHeader
+              id={commentItem.id}
               deleted={commentItem.deleted || false}
               by={commentItem.by}
               time={commentItem.time}
@@ -96,7 +97,6 @@ export default function Comment({
                 />
 
                 <CommentUtil
-                  commentId={commentItem.id}
                   deleted={commentItem.deleted || false}
                   isChildrenCollapsed={isChildrenCollapsed}
                   setIsChildrenCollapsed={setIsChildrenCollapsed}

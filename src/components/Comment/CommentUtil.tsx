@@ -3,16 +3,13 @@ import Up from "../../../public/up.svg";
 import Comment from "../../../public/comment.svg";
 import CircleMinus from "../../../public/circle-minus.svg";
 import CirclePlus from "../../../public/circle-plus.svg";
-import CopyLinkButton from "./CopyLinkButton";
 
 function CommentUtil({
-  commentId,
   deleted,
   isChildrenCollapsed,
   hasChildren,
   setIsChildrenCollapsed,
 }: {
-  commentId: number;
   deleted: boolean;
   isChildrenCollapsed: boolean;
   hasChildren: boolean;
@@ -54,7 +51,6 @@ function CommentUtil({
                 Reply
               </span>
             </button>
-            <CopyLinkButton commentId={commentId} />
           </div>
         </div>
       )}

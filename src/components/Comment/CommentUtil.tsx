@@ -3,13 +3,16 @@ import Up from "../../../public/up.svg";
 import Comment from "../../../public/comment.svg";
 import CircleMinus from "../../../public/circle-minus.svg";
 import CirclePlus from "../../../public/circle-plus.svg";
+import CopyLinkButton from "./CopyLinkButton";
 
 function CommentUtil({
+  commentId,
   deleted,
   isChildrenCollapsed,
   hasChildren,
   setIsChildrenCollapsed,
 }: {
+  commentId: number;
   deleted: boolean;
   isChildrenCollapsed: boolean;
   hasChildren: boolean;
@@ -25,7 +28,7 @@ function CommentUtil({
             <div className="flex items-center justify-center w-full py-4">
               <button
                 onClick={() => setIsChildrenCollapsed((pre: boolean) => !pre)}
-                className="tap-target text-text-primary fill-current text-sm w-[1.1rem] group-hover:text-text-primary bg-surface-primary z-10"
+                className="text-text-primary fill-current text-sm w-[1.1rem] group-hover:text-text-primary bg-surface-primary z-10"
               >
                 {isChildrenCollapsed ? <CirclePlus /> : <CircleMinus />}
               </button>
@@ -51,6 +54,7 @@ function CommentUtil({
                 Reply
               </span>
             </button>
+            <CopyLinkButton commentId={commentId} />
           </div>
         </div>
       )}

@@ -6,6 +6,11 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  // Lets pages give relative og:url / canonical paths. Netlify sets URL to
+  // the site's main address.
+  metadataBase: new URL(
+    process.env.URL ?? "https://hacker-read-it.netlify.app"
+  ),
   title: "Hackers Read It",
   description: "A Reddit-style Hacker News reader",
   appleWebApp: {

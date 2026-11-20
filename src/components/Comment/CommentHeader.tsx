@@ -2,14 +2,17 @@ import React from "react";
 import ItemHeader from "../ItemHeader";
 import UserAvatar from "../UserAvatar";
 import CirclePlus from "../../../public/circle-plus.svg";
+import { itemPath } from "@/lib/utils";
 
 export default function CommentHeader({
+  id,
   deleted,
   by,
   time,
   isCollapsed,
   setIsCollapsed,
 }: {
+  id: number;
   deleted: boolean;
   by: string;
   time: number;
@@ -32,7 +35,11 @@ export default function CommentHeader({
       )}
 
       <div className="ml-2">
-        <ItemHeader by={!deleted ? by : "[deleted]"} time={time} />
+        <ItemHeader
+          by={!deleted ? by : "[deleted]"}
+          time={time}
+          href={itemPath(id)}
+        />
       </div>
     </div>
   );

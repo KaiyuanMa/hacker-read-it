@@ -55,6 +55,11 @@ export function userPath(username: string) {
   return `/user/${encodeURIComponent(username)}`;
 }
 
+// Stories and comments share one route; the page picks the view by item type.
+export function itemPath(itemId: number) {
+  return `/item/${itemId}`;
+}
+
 // A comment only knows its direct parent, so to find the story it belongs to
 // we walk up the parent chain. Results are cached because comments from the
 // same thread share ancestors.

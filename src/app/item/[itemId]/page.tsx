@@ -1,62 +1,67 @@
-"use client";
-import { useEffect, useState } from "react";
-import { getItem } from "@/lib/api";
-import { BaseItem, CommentItem } from "@/lib/types";
-import Loading from "@/components/Loading";
-import EmptyState from "@/components/EmptyState";
-import StoryThread from "@/components/StoryThread";
-import CommentThread from "@/components/CommentThread";
+import type { Metadata } from "next";
+import ItemView from "@/components/ItemView";
+import { excerpt, getItemSummary } from "@/lib/itemSummary";
+import { itemPath } from "@/lib/utils";
 
-// HN gives posts and comments ids from the same sequence, so /item/<id> serves
-// both: a post shows with its comments, a comment with its replies.
-export default function Item({ params }: { params: { itemId: string } }) {
-  // undefined = still loading, null = no such item
-  const [item, setItem] = useState<BaseItem | null | undefined>(undefined);
-  const [error, setError] = useState(false);
+type Props = { params: { itemId: string } };
 
-  useEffect(() => {
-    let cancelled = false;
-    setItem(undefined);
-    setError(false);
+// The page renders in the browser, but link previews, crawlers and AI tools
+// don't run JS. So the server looks the item up once and puts its title and
+// an excerpt in <head>, plus a plain-text copy in <noscript>. If the lookup
+// fails or is slow, the page gets the site's default tags and works as before.
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const summary = await getItemSummary(params.itemId);
+  if (!summary) return {};
 
-    if (!/^\d+$/.test(params.itemId)) {
-      setItem(null);
-      return;
-    }
-    getItem(params.itemId)
-      .then((_item) => {
-        if (!cancelled) setItem(_item ?? null);
-      })
-      .catch(() => {
-        if (!cancelled) setError(true);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [params.itemId]);
+  const description =
+    [summary.byline, excerpt(summary.paragraphs)].filter(Boolean).join(". ") ||
+    undefined;
+  const path = itemPath(summary.id);
 
-  if (error) {
-    return (
-      <EmptyState
-        title="Couldn't load this page"
-        lines={[
-          "Something went wrong talking to Hacker News.",
-          "Try refreshing the page.",
-        ]}
-      />
-    );
-  }
-  if (item === undefined) return <Loading />;
-  if (item === null) {
-    return (
-      <EmptyState
-        title="Nothing here"
-        lines={["There's no Hacker News post or comment with this id."]}
-      />
-    );
-  }
-  if (item.type === "comment") {
-    return <CommentThread comment={item as CommentItem} />;
-  }
-  return <StoryThread story={item} />;
+  return {
+    title: summary.title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      title: summary.title,
+      description,
+      url: path,
+      type: "article",
+      siteName: "Hackers Read It",
+    },
+    twitter: { card: "summary", title: summary.title, description },
+  };
+}
+
+export default async function ItemPage({ params }: Props) {
+  const summary = await getItemSummary(params.itemId);
+
+  return (
+    <>
+      {summary ? (
+        <noscript>
+          <article>
+            <h1>{summary.title}</h1>
+            {summary.byline ? <p>{summary.byline}</p> : null}
+            {summary.url ? (
+              <p>
+                <a href={summary.url}>{summary.url}</a>
+              </p>
+            ) : null}
+            {summary.paragraphs.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+            {summary.story ? (
+              <p>
+                <a href={itemPath(summary.story.id)}>
+                  View the full discussion
+                </a>
+              </p>
+            ) : null}
+          </article>
+        </noscript>
+      ) : null}
+      <ItemView itemId={params.itemId} />
+    </>
+  );
 }

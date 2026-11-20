@@ -13,11 +13,15 @@ export default function Comment({
   parentIsComment,
   isLastChildren,
   layersDeepFromLoad,
+  expandAll = false,
 }: {
   commentItem: CommentItem;
   isLastChildren: boolean;
   parentIsComment: boolean;
   layersDeepFromLoad: number;
+  // Load every reply at every depth up front instead of the first two at the
+  // top level. Used on a comment's own page, which shows its whole subtree.
+  expandAll?: boolean;
 }) {
   const [childrenComments, setChildrenComments] = useState<CommentItem[]>([]);
   const [isHovered, setIsHovered] = useState(false);
@@ -37,12 +41,10 @@ export default function Comment({
   }
 
   function computeFetchCount() {
+    const kidCount = commentItem.kids?.length ?? 0;
+    if (expandAll) return kidCount;
     if (layersDeepFromLoad >= 1) return 0;
-    if (commentItem.kids !== undefined && commentItem.kids.length > 0) {
-      if (commentItem.kids.length > 2) return 2;
-      return commentItem.kids.length;
-    }
-    return 0;
+    return Math.min(kidCount, 2);
   }
   useEffect(() => {
     const fetchCount = computeFetchCount();
@@ -65,6 +67,7 @@ export default function Comment({
           />
           <div>
             <CommentHeader
+              id={commentItem.id}
               deleted={commentItem.deleted || false}
               by={commentItem.by}
               time={commentItem.time}
@@ -88,7 +91,10 @@ export default function Comment({
                   )}
                 </div>
 
-                <CommentContent text={commentItem.text} />
+                <CommentContent
+                  text={commentItem.text}
+                  dead={commentItem.dead}
+                />
 
                 <CommentUtil
                   deleted={commentItem.deleted || false}
@@ -118,6 +124,7 @@ export default function Comment({
                           isLastChildren={commentItem.kids!.length === i + 1}
                           key={comment.id}
                           layersDeepFromLoad={layersDeepFromLoad + 1}
+                          expandAll={expandAll}
                         />
                       ))}
                     </div>

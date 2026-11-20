@@ -1,13 +1,21 @@
 import React from "react";
 
-function CommentContent({ text }: { text: string }) {
+// HN still serves dead (flagged or killed) comments, text included. Like HN
+// with "showdead" off, we show a placeholder instead of their text.
+function CommentContent({ text, dead }: { text?: string; dead?: boolean }) {
   return (
     <div className="contents">
       <div />
-      <div
-        className="story-text-expanded | block text-sm text-text-primary font-light ml-2"
-        dangerouslySetInnerHTML={{ __html: text }}
-      />
+      {dead ? (
+        <p className="block text-sm text-text-tertiary font-light italic ml-2">
+          [dead]
+        </p>
+      ) : (
+        <div
+          className="story-text-expanded | block text-sm text-text-primary font-light ml-2"
+          dangerouslySetInnerHTML={{ __html: text ?? "" }}
+        />
+      )}
     </div>
   );
 }

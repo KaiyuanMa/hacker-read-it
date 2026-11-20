@@ -1,123 +1,62 @@
 "use client";
+import { useEffect, useState } from "react";
 import { getItem } from "@/lib/api";
 import { BaseItem, CommentItem } from "@/lib/types";
-import { fetchComments as fetchCommentsApi } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import StoryUtil from "@/components/StoryUtil";
 import Loading from "@/components/Loading";
-import Comment from "@/components/Comment/Comment";
-import Comments from "../../../../public/comments.svg";
-import ChevronDown from "../../../../public/chevron-down.svg";
-import ItemHeader from "@/components/ItemHeader";
+import EmptyState from "@/components/EmptyState";
+import StoryThread from "@/components/StoryThread";
+import CommentThread from "@/components/CommentThread";
 
+// HN gives posts and comments ids from the same sequence, so /item/<id> serves
+// both: a post shows with its comments, a comment with its replies.
 export default function Item({ params }: { params: { itemId: string } }) {
-  const [item, setItem] = useState<BaseItem>();
-  const [loading, setLoading] = useState(true);
-  const [comments, setComments] = useState<CommentItem[]>([]);
-
-  async function fetchData() {
-    setLoading(true);
-    const _item = await getItem(params.itemId);
-    setItem(_item);
-    await fetchComments(9, _item);
-    setLoading(false);
-  }
-
-  async function fetchComments(fetchCount: number, item: BaseItem) {
-    if (item === undefined || item.kids === undefined) return;
-    const _comments = await fetchCommentsApi(
-      fetchCount,
-      item.kids,
-      comments.length
-    );
-    setComments([...comments, ..._comments]);
-    console.log(comments);
-  }
+  // undefined = still loading, null = no such item
+  const [item, setItem] = useState<BaseItem | null | undefined>(undefined);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchData();
+    let cancelled = false;
+    setItem(undefined);
+    setError(false);
+
+    if (!/^\d+$/.test(params.itemId)) {
+      setItem(null);
+      return;
+    }
+    getItem(params.itemId)
+      .then((_item) => {
+        if (!cancelled) setItem(_item ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setError(true);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [params.itemId]);
 
-  return (
-    <main>
-      {loading ? (
-        <Loading />
-      ) : item !== undefined ? (
-        <div className="flex flex-col w-full gap-4 py-4">
-          <div className="flex flex-col gap-2">
-            <ItemHeader by={item.by} time={item.time} />
-            <h2 className="font-semibold text-xl sm:text-2xl break-words">
-              {item.title}
-            </h2>
-            {item.text !== undefined ? (
-              <div
-                className="story-text-expanded | text-sm text-text-secondary"
-                dangerouslySetInnerHTML={{ __html: item.text }}
-              />
-            ) : (
-              ""
-            )}
-            <StoryUtil
-              url={item.url}
-              score={item.score!}
-              descendants={item.descendants!}
-            />
-          </div>
-          <div>
-            <button className="rounded-full px-4 py-1 border border-border-secondary text-sm font-medium hover:border-border-button-hover">
-              Add Comment
-            </button>
-          </div>
-          {/* <div className="text-sm text-text-tertiary">
-            <div>Sort by:</div>
-          </div> */}
-          {item.kids === undefined || item.kids.length === 0 ? (
-            <div className="flex gap-5 my-8 items-center">
-              <div className="w-16 h-16">
-                <Comments />
-              </div>
-              <div>
-                <h2 className="text-lg font-medium">
-                  Be the first hacker to comment
-                </h2>
-                <div className="text-text-tertiary text-sm mt-4">
-                  <p>Nobody&apos;s responded to this post yet.</p>
-                  <p>Add your thoughts and get the conversation going.</p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4 ">
-              {comments.map((comment) => (
-                <Comment
-                  parentIsComment={false}
-                  commentItem={comment}
-                  key={comment.id}
-                  isLastChildren={false}
-                  layersDeepFromLoad={0}
-                />
-              ))}
-              {item.kids !== undefined && item.kids.length > comments.length ? (
-                <div>
-                  <button
-                    onClick={async () => await fetchComments(9, item)}
-                    className="flex items-center gap-2 bg-surface-brand rounded-full py-2 px-4"
-                  >
-                    <div className="fill-current text-sm w-[1.1rem] group-hover:text-text-primary">
-                      <ChevronDown />
-                    </div>
-                    <p className="text-sm font-medium">View more comments</p>
-                  </button>
-                </div>
-              ) : (
-                ""
-              )}
-            </div>
-          )}
-        </div>
-      ) : (
-        ""
-      )}
-    </main>
-  );
+  if (error) {
+    return (
+      <EmptyState
+        title="Couldn't load this page"
+        lines={[
+          "Something went wrong talking to Hacker News.",
+          "Try refreshing the page.",
+        ]}
+      />
+    );
+  }
+  if (item === undefined) return <Loading />;
+  if (item === null) {
+    return (
+      <EmptyState
+        title="Nothing here"
+        lines={["There's no Hacker News post or comment with this id."]}
+      />
+    );
+  }
+  if (item.type === "comment") {
+    return <CommentThread comment={item as CommentItem} />;
+  }
+  return <StoryThread story={item} />;
 }

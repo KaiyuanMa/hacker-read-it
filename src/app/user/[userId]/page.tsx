@@ -8,7 +8,7 @@ import Loading from "@/components/Loading";
 import Story from "@/components/Story";
 import UserAvatar from "@/components/UserAvatar";
 import UserComment from "@/components/UserComment";
-import Comments from "../../../../public/comments.svg";
+import EmptyState from "@/components/EmptyState";
 import ChevronDown from "../../../../public/chevron-down.svg";
 
 // `submitted` can hold thousands of ids (newest first), so fetch a page at a time.
@@ -299,24 +299,6 @@ function Stat({
     <div className="flex flex-col" title={hint}>
       <span className="font-semibold">{value}</span>
       <span className="text-xs text-text-tertiary">{label}</span>
-    </div>
-  );
-}
-
-function EmptyState({ title, lines }: { title: string; lines: string[] }) {
-  return (
-    <div className="flex gap-5 my-8 items-center">
-      <div className="w-16 h-16">
-        <Comments />
-      </div>
-      <div>
-        <h2 className="text-lg font-medium">{title}</h2>
-        <div className="text-text-tertiary text-sm mt-4">
-          {lines.map((line) => (
-            <p key={line}>{line}</p>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

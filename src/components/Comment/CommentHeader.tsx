@@ -1,15 +1,17 @@
 import React from "react";
 import ItemHeader from "../ItemHeader";
-import UserAvatar from "../UserAvatar";
 import CirclePlus from "../../../public/circle-plus.svg";
+import CommentMenu from "./CommentMenu";
 
 export default function CommentHeader({
+  id,
   deleted,
   by,
   time,
   isCollapsed,
   setIsCollapsed,
 }: {
+  id: number;
   deleted: boolean;
   by: string;
   time: number;
@@ -17,22 +19,25 @@ export default function CommentHeader({
   setIsCollapsed: Function;
 }) {
   return (
-    <div className="grid grid-cols-[24px_minmax(0,1fr)] sm:grid-cols-[32px_minmax(0,1fr)]">
+    <div className="grid grid-cols-[32px_minmax(0,1fr)]">
       {isCollapsed ? (
-        <div className="flex w-6 h-6 sm:w-8 sm:h-8 items-center justify-center py-4">
+        <div className="flex w-8 h-8 items-center justify-center py-4">
           <button
             onClick={() => setIsCollapsed(false)}
-            className="tap-target text-text-primary fill-current text-sm w-[1.1rem] group-hover:text-text-primary bg-surface-primary z-10"
+            className="text-text-primary fill-current text-sm w-[1.1rem] group-hover:text-text-primary bg-surface-primary z-10"
           >
             <CirclePlus />
           </button>
         </div>
       ) : (
-        <UserAvatar username={!deleted ? by : ""} link={!deleted} />
+        <div className="bg-surface-secondary w-8 h-8 text-text-primary flex justify-center items-center text-sm font-semibold">
+          {!deleted ? by[0].toUpperCase() : ""}
+        </div>
       )}
 
-      <div className="ml-2">
+      <div className="ml-2 flex items-center gap-1">
         <ItemHeader by={!deleted ? by : "[deleted]"} time={time} />
+        {deleted ? "" : <CommentMenu commentId={id} />}
       </div>
     </div>
   );

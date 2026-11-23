@@ -12,15 +12,30 @@ import {
 import { BaseItem } from "@/lib/types";
 import { useEffect, useState, useRef, useCallback } from "react";
 import Loading from "@/components/Loading";
+import EmptyState from "@/components/EmptyState";
 
 export default function Category({ params }: { params: { category: string } }) {
   const [items, setItems] = useState<BaseItem[]>([]);
   const [itemIds, setItemIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  // Set when the list itself couldn't load (e.g. offline, never opened before).
+  const [error, setError] = useState(false);
+  // Set when loading more failed, so scrolling stops retrying until the
+  // connection comes back.
+  const [stalled, setStalled] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    fetchData();
+    fetchData().catch(() => {
+      setError(true);
+      setLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    const resume = () => setStalled(false);
+    window.addEventListener("online", resume);
+    return () => window.removeEventListener("online", resume);
   }, []);
 
   async function fetchMore(fetchCount: number) {
@@ -69,21 +84,40 @@ export default function Category({ params }: { params: { category: string } }) {
 
   const lastElementRef = useCallback(
     (node: HTMLElement | null) => {
-      if (loading) return;
       if (observer.current) observer.current.disconnect();
+      if (loading || stalled) return;
 
       observer.current = new IntersectionObserver(async (entries) => {
         if (entries[0].isIntersecting) {
           setLoading(true);
-          await fetchMore(9);
-          setLoading(false);
+          try {
+            await fetchMore(9);
+          } catch {
+            // Offline and these stories were never opened: keep what's
+            // shown instead of spinning forever.
+            setStalled(true);
+          } finally {
+            setLoading(false);
+          }
         }
       });
 
       if (node) observer.current.observe(node);
     },
-    [loading, fetchMore]
+    [loading, stalled, fetchMore]
   );
+
+  if (error) {
+    return (
+      <EmptyState
+        title="Couldn't load this page"
+        lines={[
+          "Something went wrong talking to Hacker News.",
+          "Try refreshing the page.",
+        ]}
+      />
+    );
+  }
 
   return (
     <main>

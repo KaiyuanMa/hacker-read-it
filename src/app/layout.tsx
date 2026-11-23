@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Nav from "./Nav";
+import ServiceWorker from "./ServiceWorker";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-surface-primary relative`}>
         <Nav />
         <main className="pt-2">{children}</main>
+        <ServiceWorker />
       </body>
     </html>
   );

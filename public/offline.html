@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0d1114" />
+    <title>Offline · Hackers Read It</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html {
+        background: #0d1114;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 1000px;
+        padding: 0 12px;
+        color: #eef1f3;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+      }
+      nav {
+        display: flex;
+        gap: 6px;
+        padding: 8px 0;
+        border-bottom: 1px solid #a1a1aa;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      nav a {
+        flex-shrink: 0;
+        color: inherit;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        height: 36px;
+        padding: 0 10px;
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: 16px;
+        background: #ffffff20;
+      }
+      @media (min-width: 640px) {
+        nav {
+          gap: 8px;
+        }
+        nav a {
+          justify-content: center;
+          height: 2.5em;
+          width: 5em;
+          padding: 0;
+          font-size: 16px;
+        }
+      }
+      main {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        margin: 32px 0;
+      }
+      h1 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 500;
+      }
+      p {
+        margin: 16px 0 0;
+        color: #a1a1aa;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      button {
+        margin-top: 16px;
+        color: inherit;
+        font: inherit;
+        font-size: 14px;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        border: 1px solid #ffffff20;
+        background: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/category/top_story">Top</a>
+      <a href="/category/new_story">New</a>
+      <a href="/category/best_story">Best</a>
+      <a href="/category/show">Show</a>
+      <a href="/category/ask">Ask</a>
+      <a href="/category/job">Job</a>
+    </nav>
+    <main>
+      <svg width="64" height="64" fill="currentColor" aria-hidden="true" style="flex-shrink:0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Pro 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc. --><defs><style>.fa-secondary{opacity:.4}</style></defs><path class="fa-secondary" d="M231.5 383C348.9 372.9 448 288.3 448 176c0-5.2-.2-10.4-.6-15.5C555.1 167.1 640 243.2 640 336c0 38.6-14.7 74.3-39.6 103.4c3.5 9.4 8.7 17.7 14.2 24.7c4.8 6.2 9.7 11 13.3 14.3c1.8 1.6 3.3 2.9 4.3 3.7c.5 .4 .9 .7 1.1 .8l.2 .2 0 0 0 0c5.6 4.1 7.9 11.3 5.8 17.9c-2.1 6.6-8.3 11.1-15.2 11.1c-21.8 0-43.8-5.6-62.1-12.5c-9.2-3.5-17.8-7.4-25.2-11.4C505.9 503.3 470.2 512 432 512c-95.6 0-176.2-54.6-200.5-129z"/><path class="fa-primary" d="M416 176c0 97.2-93.1 176-208 176c-38.2 0-73.9-8.7-104.7-23.9c-7.5 4-16 7.9-25.3 11.4C59.8 346.4 37.8 352 16 352c-6.9 0-13.1-4.5-15.2-11.1s.2-13.8 5.8-17.9l0 0 0 0 .2-.2c.2-.2 .6-.4 1.1-.8c1-.8 2.5-2 4.3-3.7c3.6-3.3 8.5-8.1 13.3-14.3c5.5-7 10.7-15.4 14.2-24.7C14.7 250.3 0 214.6 0 176C0 78.8 93.1 0 208 0S416 78.8 416 176z"/></svg>
+      <div>
+        <h1>You're offline</h1>
+        <p>This page hasn't been saved yet. Pages you've already opened still work.</p>
+        <button onclick="location.reload()">Try again</button>
+      </div>
+    </main>
+    <script>
+      // Come back by itself once the connection returns.
+      window.addEventListener("online", () => location.reload());
+    </script>
+  </body>
+</html>
